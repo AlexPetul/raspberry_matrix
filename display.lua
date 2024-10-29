@@ -1,4 +1,4 @@
-require("tablelib")
+require("lib/tablelib")
 local graphics = require("graphics")
 local colors = require("colors")
 local alphabet = require("alphabet")
@@ -31,6 +31,7 @@ function Display:show(text, color, slide)
         
         local first = 1
         local iterations = (text:len() - 1) * 8 + 1
+        
         for iter = 1, iterations do
             local window = {}
             if iter == 1 then
@@ -46,14 +47,13 @@ function Display:show(text, color, slide)
                     local j = (8 * line) + multiplier
                     local counter = 0
                     local last_i = first
+
                     for i = first, j do
                         counter = counter + 1
                         table.insert(window, panorama[i])
                         last_i = i
                     end
-                    if iter == 16 then
-                        print(first, j)
-                    end
+                    
                     for ix = 1, 8 - counter do
                         table.insert(window, panorama[last_i + 57])
                         last_i = last_i + 1
@@ -63,18 +63,18 @@ function Display:show(text, color, slide)
                 end
                 first = old_first
             end
-            
+    
             if math.fmod(first, 8) == 0 then
                 first = first + 56
             end
-            
+    
             first = first + 1
             
             for j, clr in ipairs(window) do
                 fd:seek("set", 2 * (j - 1))
                 fd:write(clr)
             end
-            os.execute("sleep 0.4")
+            os.execute("sleep 0.1")
             
         end
 

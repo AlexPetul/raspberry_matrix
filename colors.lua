@@ -1,8 +1,15 @@
 local colors = {}
 
+local cache = {}
+setmetatable(cache, {__mode = "v"})
+
 function colors.color_to_bin(rgb)
     if rgb:len() ~= 6 then
         error("color " .. rgb .. " is not a 6-digit hex color")
+    end
+
+    if cache[rgb] then
+        return cache[rgb]
     end
 
     local r = tonumber(rgb:sub(1, 2), 16)
@@ -13,8 +20,9 @@ function colors.color_to_bin(rgb)
     g = (g >> 2) & 0x3F
     b = (b >> 3) & 0x1F
     local comb = (r << 11) + (g << 5) + b
-
-    return string.pack("H", comb)
+    
+    cache[rgb] = string.pack("H", comb)
+    return cache[rgb]
 end
 
 function lines(str)
